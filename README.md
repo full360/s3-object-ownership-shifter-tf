@@ -80,7 +80,7 @@ The module implementation should follow this structure
 
 ```
 module "s3-object-ownershift-shifter" {
-  source = "git::ssh://git@github.com/full360/s3-object-ownership-shifter-tf?ref=master//modules/s3-file-copier"
+  source = "https://github.com/full360/s3-object-ownership-shifter/releases/download/v0.1.2/s3-object-ownership-shifter_0.1.2_Linux_386.zip"
 
   region                    = "${var.region}"
   aws_s3_source_bucket_name = "${var.aws_s3_source_bucket_name}"
