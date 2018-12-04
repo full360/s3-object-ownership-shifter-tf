@@ -1,0 +1,61 @@
+locals = {
+  # STANDARD PREFIX FOR RESOURCES
+  f360_env_copier = "${var.alias}-${var.role}-${var.env}"
+
+  region                    = "us-west-2"
+  env                       = "dev"
+  aws_s3_source_bucket_name = "bucket-source-test-name"
+  aws_s3_target_bucket_name = "bucket-target-test-name"
+  ownership_full_control    = "emailaddress=exacmplet@example.com"
+  lambda_function_name      = "${f360_env_copier}-${var.lambda_function_name}"
+  lambda_role_name          = "${f360_env_copier}-${var.lambda_role_name}"
+
+  # AWS recommend always tag your results
+  common_tags = {
+    Terraform   = true
+    Author      = "${var.author}"
+    Department  = "${var.departament}"
+    Alias       = "${var.alias}"
+    Environment = "${var.env}"
+  }
+}
+
+#--------------------------------------------------------------
+# S3 Backend configuration
+#--------------------------------------------------------------
+#In case your going to use terraform backend you can use something like this
+terraform {
+  backend "s3" {
+    bucket               = "${var.backend_bucket_name}"
+    key                  = "${var.backend_key_tf_state}"
+    workspace_key_prefix = ""
+    region               = "${var.backend_region}"
+    dynamodb_table       = "${var.backend_dynamodb_table}"
+    encrypt              = true
+  }
+}
+
+#--------------------------------------------------------------
+# Environment validation
+#--------------------------------------------------------------
+# We recommend use terraform workspaces
+resource "null_resource" "env_validation" {
+  count                                             = "${var.env == terraform.workspace ? 0 : 1}"
+  "ERROR: Workspace does not match given env name!" = true
+}
+
+#--------------------------------------------------------------
+# Module
+#--------------------------------------------------------------
+module "s3-object-ownershift-shifter" {
+  source = "git::ssh://git@github.com/full360/s3-object-ownership-shifter-tf?ref=master//modules/s3-file-copier"
+
+  region                    = "${var.region}"
+  env                       = "${var.env}"
+  common_tags               = "${local.common_tags}"
+  aws_s3_source_bucket_name = "${var.aws_s3_source_bucket_name}"
+  aws_s3_target_bucket_name = "${var.aws_s3_target_bucket_name}"
+  ownership_full_control    = "${var.ownership_full_control}"
+  lambda_function_name      = "${local.lambda_function_name}"
+  lambda_role_name          = "${local.lambda_role_name}"
+}

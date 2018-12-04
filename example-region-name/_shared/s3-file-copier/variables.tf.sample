@@ -1,0 +1,14 @@
+variable "region" {}
+variable "aws_s3_source_bucket_name" {}
+variable "aws_s3_target_bucket_name" {}
+variable "ownership_full_control" {}
+variable "env" {}
+variable "author" {}
+variable "departament" {}
+variable "alias" {}
+variable "lambda_function_name" {}
+variable "lambda_role_name" {}
+variable "backend_bucket_name" {}
+variable "backend_key_tf_state" {}
+variable "backend_region" {}
+variable "backend_dynamodb_table" {}

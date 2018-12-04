@@ -1,0 +1,17 @@
+#--------------------------------------------------------------
+# Variables
+#--------------------------------------------------------------
+region                    = "us-west-2"
+env                       = "prod"
+author                    = "full360"
+departament               = "global"
+alias                     = "full360"
+role                      = "dbr"
+aws_s3_source_bucket_name = "bucket-source-test-name"
+aws_s3_target_bucket_name = "bucket-target-test-name"
+ownership_full_control    = "emailaddress=exacmplet@example.com"
+
+backend_bucket_name = "example-bucket-name"
+backend_key_tf_state = "us_west/dbr/terraform.tfstate"
+backend_region = "us-east-1"
+backend_dynamodb_table = "tf-full360-state-lock"
