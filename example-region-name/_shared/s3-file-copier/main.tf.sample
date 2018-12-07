@@ -58,4 +58,5 @@ module "s3-object-ownershift-shifter" {
   ownership_full_control    = "${var.ownership_full_control}"
   lambda_function_name      = "${local.lambda_function_name}"
   lambda_role_name          = "${local.lambda_role_name}"
+  version                   = "0.1.4"
 }

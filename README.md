@@ -4,6 +4,8 @@
 
 All resources are set in a terraform module so all you need to do is add the module to your terraform script and apply the changes.
 
+**NOTE You need to have [CURL](https://curl.haxx.se/) installed to apply the infrastructure**
+
 ### Step 1 User permissions
 
 Make sure your user has the right permissions to apply the infrastructure, attach this IAM policy to your user
@@ -80,12 +82,13 @@ The module implementation should follow this structure
 
 ```
 module "s3-object-ownershift-shifter" {
-  source = "https://github.com/full360/s3-object-ownership-shifter/releases/download/v0.1.2/s3-object-ownership-shifter_0.1.2_Linux_386.zip"
+  source = "git@github.com/full360/s3-object-ownership-shifter-tf.git?ref=master//modules/s3-file-copier"
 
   region                    = "${var.region}"
   aws_s3_source_bucket_name = "${var.aws_s3_source_bucket_name}"
   aws_s3_target_bucket_name = "${var.aws_s3_target_bucket_name}"
   ownership_full_control    = "${var.ownership_full_control}"
+  version                   = "${var.lambda_version}"
 }
 ```
 
@@ -97,9 +100,11 @@ variable "aws_s3_source_bucket_name" {}
 variable "aws_s3_target_bucket_name" {}
 variable "ownership_full_control" {}
 variable "env" {}
+variable "lambda_version" {}
 
 region                    = "us-west-2"
 env                       = "dev"
+lambda_version            = "0.1.6"
 aws_s3_source_bucket_name = "bucket-source-test-name"
 aws_s3_target_bucket_name = "bucket-target-test-name"
 ownership_full_control    = "emailaddress=exacmplet@example.com"
@@ -118,6 +123,7 @@ variable "env" {}
 
 region                    = "us-west-2"
 env                       = "dev"
+lambda_version            = "0.1.6"
 aws_s3_source_bucket_name = "bucket-source-test-name"
 aws_s3_target_bucket_name = "bucket-target-test-name"
 ownership_full_control    = "emailaddress=exacmplet@example.com"
