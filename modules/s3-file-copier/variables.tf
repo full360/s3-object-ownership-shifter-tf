@@ -2,6 +2,7 @@ variable "region" {}
 variable "env" {}
 variable "aws_s3_source_bucket_name" {}
 variable "aws_s3_target_bucket_name" {}
+variable "lambda_version" {}
 
 variable "ownership_full_control" {
   default = ""
@@ -20,7 +21,7 @@ variable "lambda_function_name" {
 }
 
 variable "lambda_handler_name" {
-  default = "main"
+  default = "s3-object-ownership-shifter"
 }
 
 variable "lambda_runtime" {

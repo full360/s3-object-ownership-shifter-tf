@@ -107,17 +107,26 @@ resource "aws_iam_policy_attachment" "s3_access" {
 #--------------------------------------------------------------
 # Lambda Function
 #--------------------------------------------------------------
-data "null_data_source" "lambda_input_file" {
-  inputs {
-    filename = "${replace(substr("${path.module}/build/s3copier/main.zip", length(path.cwd) + 1, -1), "/terraform/modules/s3-file-copier/" , "/")}"
+resource "null_resource" "lambda_input_file" {
+
+  triggers = {
+    filename = "${path.module}/s3-object-ownership-shifter.zip"
+  }
+
+  provisioner "local-exec" {
+    command = "curl https://github.com/full360/s3-object-ownership-shifter/releases/download/v${var.lambda_version}/s3-object-ownership-shifter_${var.lambda_version}_Linux_x86_64.zip -fsSL -o ${path.module}/s3-object-ownership-shifter.zip"
   }
 }
 
 resource "aws_lambda_function" "lambda" {
-  filename         = "${data.null_data_source.lambda_input_file.outputs.filename}"
+  depends_on = [
+    "null_resource.lambda_input_file"
+  ]
+
+  filename         = "${null_resource.lambda_input_file.triggers.filename}"
   function_name    = "${var.lambda_function_name}"
   handler          = "${var.lambda_handler_name}"
-  source_code_hash = "${base64sha256(file(data.null_data_source.lambda_input_file.outputs.filename))}"
+  source_code_hash = "${base64sha256(null_resource.lambda_input_file.triggers.filename)}"
   runtime          = "${var.lambda_runtime}"
   role             = "${aws_iam_role.lambda_role.arn}"
   timeout          = "20"
